@@ -22,8 +22,8 @@ public abstract partial class BaseListView<DataType>: Control
 
     #region List Methods
 
-    public abstract int GetDataCount();
-    public abstract DataType GetDataAt(int i);
+    protected abstract int GetDataCount();
+    protected abstract DataType GetDataAt(int i);
 
     /// <summary>
     /// (Optional) This is called when an item view has been initialised for the very first time.
@@ -32,14 +32,14 @@ public abstract partial class BaseListView<DataType>: Control
     /// <param name="data">The data adjacent to the item view's index.</param>
     /// <param name="index">The index of the item view in the main viewport.</param>
     /// <returns></returns>
-    public virtual void OnConfigureItem(BaseListItem<DataType> item, DataType data, int index) { }
+    protected virtual void OnConfigureItem(BaseListItem<DataType> item, DataType data, int index) { }
 
     /// <summary>
     /// (Optional) This is called by certain item views that support drag-and-drop functionality. The expected functionality is to swap the data at the specified indices.
     /// </summary>
     /// <param name="indexA"></param>
     /// <param name="indexB"></param>
-    public virtual void OnRequestSwap(int indexA, int indexB) { }
+    protected virtual void OnRequestSwap(int indexA, int indexB) { }
 
     /// <summary>
     /// (Optional) This is called when an item view has been selected.
@@ -146,7 +146,10 @@ public abstract partial class BaseListView<DataType>: Control
 
             // Automatically forward activation events to the main list view
             itemView.Visible = false;
+
             itemView.Activated += OnItemActivatedInternal;
+            itemView.SwapRequested += OnRequestSwap;
+
             _items[i] = itemView;
 
             if (i >= count)

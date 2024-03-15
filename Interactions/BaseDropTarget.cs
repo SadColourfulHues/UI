@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 
 namespace SadChromaLib.UI;
 
@@ -30,7 +31,7 @@ public abstract partial class BaseDropTarget: Panel
     /// </summary>
     /// <param name="id">The identifier of the item being dropped.</param>
     /// <param name="data">The serialised data of the dropped item.</param>
-    public abstract void ConsumeDrop(StringName id, Godot.Collections.Dictionary<string, Variant> data);
+    public abstract void ConsumeDrop(StringName id, Dictionary<StringName, Variant> data);
 
     #endregion
 
@@ -38,44 +39,62 @@ public abstract partial class BaseDropTarget: Panel
 
     public override bool _CanDropData(Vector2 atPosition, Variant data)
     {
-        if (data.VariantType != Variant.Type.String)
-            return false;
-
-        (string id, Godot.Collections.Dictionary<string, Variant> _)?
-        droppedData = DecodeData((string) data);
-
-        if (droppedData is null)
-            return false;
-
-        return IsItemCompatible(droppedData.Value.id);
+        return IsItemCompatible(GetDropDataIdentifier(data));
     }
 
     public override void _DropData(Vector2 atPosition, Variant data)
     {
-        (string id, Godot.Collections.Dictionary<string, Variant> data)?
-        droppedData = DecodeData((string) data);
+        var droppedData = DecodeData((string) data);
 
         if (droppedData is null)
             return;
 
-        ConsumeDrop(droppedData.Value.id, droppedData.Value.data);
+        ConsumeDrop(droppedData.Value.Item1, droppedData.Value.Item2);
     }
 
     #endregion
 
-    #region Helpers
+    #region Generic Drop Target Utils
 
-    private (StringName, Godot.Collections.Dictionary<string, Variant>)?
+    public static (StringName, Dictionary<StringName, Variant>)?
     DecodeData(string data)
     {
-        Godot.Collections.Dictionary<string, Variant> passedData = (Godot.Collections.Dictionary<string, Variant>) Json.ParseString(data);
+        var passedData = (Dictionary<StringName, Variant>) Json.ParseString(data);
 
         // Malformed data
         if (!passedData.ContainsKey("id") || !passedData.ContainsKey("data"))
             return null;
 
         return ((StringName) passedData["id"],
-                (Godot.Collections.Dictionary<string, Variant>) passedData["data"]);
+                (Dictionary<StringName, Variant>) passedData["data"]);
+    }
+
+    /// <summary>
+    /// Extracts a draggable item's identifier from a serialised string.
+    /// </summary>
+    /// <param name="data">The serialised string.</param>
+    /// <returns></returns>
+    public static StringName
+    GetDropDataIdentifier(Variant data)
+    {
+        if (data.VariantType != Variant.Type.String)
+            return null;
+
+        return DecodeData((string) data)?.Item1;
+    }
+
+    /// <summary>
+    /// Extracts a draggable item's data from a serialised string.
+    /// </summary>
+    /// <param name="data">The serialised string.</param>
+    /// <returns></returns>
+    public static Dictionary<StringName, Variant>
+    GetDropDataContents(Variant data)
+    {
+        if (data.VariantType != Variant.Type.String)
+            return null;
+
+        return DecodeData((string) data)?.Item2;
     }
 
     #endregion

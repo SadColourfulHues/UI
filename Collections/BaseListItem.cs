@@ -1,5 +1,7 @@
 using System.Diagnostics;
+
 using Godot;
+using Godot.Collections;
 
 namespace SadChromaLib.UI;
 
@@ -7,6 +9,9 @@ public abstract partial class BaseListItem<DataType>: Control
 {
     [Signal]
     public delegate void ActivatedEventHandler(int index);
+
+    [Signal]
+    public delegate void SwapRequestedEventHandler(int source, int target);
 
     protected Panel _highlight = null;
     protected Button _activator = null;
@@ -40,6 +45,27 @@ public abstract partial class BaseListItem<DataType>: Control
     public void SetHighlightVisibility(bool highlighted)
     {
         _highlight.Visible = highlighted;
+    }
+
+    #endregion
+
+    #region Drop Support
+
+    public override bool _CanDropData(Vector2 atPosition, Variant data)
+    {
+        return BaseDropTarget.GetDropDataIdentifier(data) == ListDraggableItem.Identifier;
+    }
+
+    public override void _DropData(Vector2 atPosition, Variant data)
+    {
+        var droppedData = BaseDropTarget.GetDropDataContents(data);
+
+        // Malformed data
+        if (droppedData?.ContainsKey(ListDraggableItem.KeySourceIndex) == false)
+            return;
+
+        int sourceIndex = (int) droppedData[ListDraggableItem.KeySourceIndex];
+        EmitSignal(SignalName.SwapRequested, sourceIndex, GetIndex());
     }
 
     #endregion
