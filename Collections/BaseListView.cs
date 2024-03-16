@@ -18,6 +18,7 @@ public abstract partial class BaseListView<DataType>: Control
     PackedScene _pkgItemViewTemplate;
 
     private BaseListItem<DataType>[] _items;
+    protected bool _canSelect = true;
     protected int _selectedIndex = -1;
 
     #region List Methods
@@ -88,7 +89,17 @@ public abstract partial class BaseListView<DataType>: Control
 
     #endregion
 
-    #region Main Methods
+    #region utility Methods
+
+    public void SetListItemsSelectable(bool canSelect)
+    {
+        _canSelect = canSelect;
+
+        if (canSelect)
+            return;
+
+        Deselect();
+    }
 
     #endregion
 
@@ -148,7 +159,7 @@ public abstract partial class BaseListView<DataType>: Control
             itemView.Visible = false;
 
             itemView.Activated += OnItemActivatedInternal;
-            itemView.SwapRequested += OnRequestSwap;
+            itemView.SwapRequested += OnItemRequestSwapInternal;
 
             _items[i] = itemView;
 
@@ -245,6 +256,9 @@ public abstract partial class BaseListView<DataType>: Control
 
     private void OnItemActivatedInternal(int index)
     {
+        if (!_canSelect)
+            return;
+
         if (IsValidIndex(_selectedIndex) &&
             IsInstanceValid(_items[_selectedIndex]))
         {
@@ -260,6 +274,14 @@ public abstract partial class BaseListView<DataType>: Control
             return;
 
         _items[index].SetHighlightVisibility(true);
+    }
+
+    private void OnItemRequestSwapInternal(int source, int target)
+    {
+        if (!_canSelect)
+            return;
+
+        OnRequestSwap(source, target);
     }
 
     #endregion
