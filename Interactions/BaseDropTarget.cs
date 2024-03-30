@@ -31,7 +31,7 @@ public abstract partial class BaseDropTarget: Panel
     /// </summary>
     /// <param name="id">The identifier of the item being dropped.</param>
     /// <param name="data">The serialised data of the dropped item.</param>
-    public abstract void ConsumeDrop(StringName id, Dictionary<StringName, Variant> data);
+    public abstract void ConsumeDrop(StringName id, DragData data);
 
     #endregion
 
@@ -56,17 +56,17 @@ public abstract partial class BaseDropTarget: Panel
 
     #region Generic Drop Target Utils
 
-    public static (StringName, Dictionary<StringName, Variant>)?
+    public static (StringName, DragData)?
     DecodeData(string data)
     {
-        var passedData = (Dictionary<StringName, Variant>) Json.ParseString(data);
+        var passedData = (DragData) Json.ParseString(data);
 
         // Malformed data
         if (!passedData.ContainsKey("id") || !passedData.ContainsKey("data"))
             return null;
 
         return ((StringName) passedData["id"],
-                (Dictionary<StringName, Variant>) passedData["data"]);
+                (DragData) passedData["data"]);
     }
 
     /// <summary>
@@ -88,7 +88,7 @@ public abstract partial class BaseDropTarget: Panel
     /// </summary>
     /// <param name="data">The serialised string.</param>
     /// <returns></returns>
-    public static Dictionary<StringName, Variant>
+    public static DragData
     GetDropDataContents(Variant data)
     {
         if (data.VariantType != Variant.Type.String)

@@ -16,10 +16,11 @@ public abstract partial class BaseDraggableItem: Button
     public abstract StringName GetDragIdentifier();
 
     /// <summary>
-    /// Returns the item's drag-and-drop data. Use JSON and SadChromaLib.Persistence for serialising native Godot primitives.
+    /// Returns the item's drag-and-drop data. Use the extensions provided in SadChromaLib::UI::CommonSerialisers
+    /// for serialising native Godot primitives.
     /// </summary>
     /// <returns></returns>
-    public abstract Godot.Collections.Dictionary<StringName, Variant> GetData();
+    public abstract DragData GetData();
 
     /// <summary>
     /// Returns whether or not the item can be picked up in the current moment.
@@ -58,7 +59,7 @@ public abstract partial class BaseDraggableItem: Button
 
     private string EncodeData()
     {
-        return Json.Stringify(new Godot.Collections.Dictionary<StringName, Variant> {
+        return Json.Stringify(new DragData {
             ["id"] = GetDragIdentifier(),
             ["data"] = GetData()
         });
