@@ -1,5 +1,4 @@
 using Godot;
-using Godot.Collections;
 
 namespace SadChromaLib.UI;
 
@@ -9,15 +8,15 @@ namespace SadChromaLib.UI;
 /// </summary>
 public sealed partial class ListDraggableItem: BaseDraggableItem
 {
-    public static StringName Identifier => "list_drag_item";
-    public static StringName KeySourceIndex => "source_idx";
+    public static string Identifier => "list_drag_item";
+    public static string KeySourceIndex => "source_idx";
 
-    public override StringName GetDragIdentifier()
+    public override string GetDragIdentifier()
         => Identifier;
 
-    public override Dictionary<StringName, Variant> GetData()
+    public override DragData GetData()
     {
-        return new Dictionary<StringName, Variant>() {
+        return new DragData {
             [KeySourceIndex] = GetParent<Node>().GetIndex()
         };
     }
@@ -25,14 +24,10 @@ public sealed partial class ListDraggableItem: BaseDraggableItem
     #region Forward Drop Events to Item View
 
     public override bool _CanDropData(Vector2 atPosition, Variant data)
-    {
-        return GetParent<Control>()._CanDropData(atPosition, data);
-    }
+        => GetParent<Control>()._CanDropData(atPosition, data);
 
     public override void _DropData(Vector2 atPosition, Variant data)
-    {
-        GetParent<Control>()._DropData(atPosition, data);
-    }
+        => GetParent<Control>()._DropData(atPosition, data);
 
     #endregion
 }

@@ -13,7 +13,7 @@ public abstract partial class BaseDraggableItem: Button
     /// <summary>The item's unique 'drag-and-drop function' identifier.</summary>
     /// </summary>
     /// <returns></returns>
-    public abstract StringName GetDragIdentifier();
+    public abstract string GetDragIdentifier();
 
     /// <summary>
     /// Returns the item's drag-and-drop data. Use the extensions provided in SadChromaLib::UI::CommonSerialisers

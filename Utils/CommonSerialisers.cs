@@ -1,4 +1,4 @@
-global using DragData = Godot.Collections.Dictionary<Godot.StringName, Godot.Variant>;
+global using DragData = Godot.Collections.Dictionary<string, Godot.Variant>;
 
 using Godot;
 
@@ -6,75 +6,63 @@ namespace SadChromaLib.UI;
 
 public static class Vector2Serialiser
 {
-	private static StringName KeyX => "x";
-	private static StringName KeyY => "y";
-
 	public static DragData Serialise(this Vector2 vec)
 	{
 		return new() {
-			[KeyX] = vec.X,
-			[KeyY] = vec.Y
+			["x"] = vec.X,
+			["y"] = vec.Y
 		};
 	}
 
 	public static Vector2 Deserialise(DragData data)
 	{
 		return new Vector2(
-			x: (float) data[KeyX],
-			y: (float) data[KeyY]
+			x: (float) data["x"],
+			y: (float) data["y"]
 		);
 	}
 }
 
 public static class Vector3Serialiser
 {
-	private static StringName KeyX => "x";
-	private static StringName KeyY => "y";
-	private static StringName KeyZ => "z";
-
 	public static DragData Serialise(this Vector3 vec)
 	{
 		return new() {
-			[KeyX] = vec.X,
-			[KeyY] = vec.Y,
-			[KeyZ] = vec.Z
+			["x"] = vec.X,
+			["y"] = vec.Y,
+			["z"] = vec.Z
 		};
 	}
 
 	public static Vector3 Deserialise(DragData data)
 	{
 		return new Vector3(
-			x: (float) data[KeyX],
-			y: (float) data[KeyY],
-			z: (float) data[KeyZ]
+			x: (float) data["x"],
+			y: (float) data["y"],
+			z: (float) data["z"]
 		);
 	}
 }
 
 public static class ColourSerialiser
 {
-	private static StringName KeyR => "r";
-	private static StringName KeyG => "g";
-	private static StringName KeyB => "b";
-	private static StringName KeyA => "a";
-
 	public static DragData Serialise(this Color colour)
 	{
 		return new() {
-			[KeyR] = colour.R,
-			[KeyG] = colour.G,
-			[KeyB] = colour.B,
-			[KeyA] = colour.A
+			["r"] = colour.R,
+			["g"] = colour.G,
+			["b"] = colour.B,
+			["a"] = colour.A
 		};
 	}
 
 	public static Color Deserialise(DragData data)
 	{
 		return new Color(
-			r: (float) data[KeyR],
-			g: (float) data[KeyG],
-			b: (float) data[KeyB],
-			a: (float) data[KeyA]
+			r: (float) data["r"],
+			g: (float) data["g"],
+			b: (float) data["b"],
+			a: (float) data["a"]
 		);
 	}
 }

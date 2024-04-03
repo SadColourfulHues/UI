@@ -1,7 +1,5 @@
 using System.Diagnostics;
-
 using Godot;
-using Godot.Collections;
 
 namespace SadChromaLib.UI;
 

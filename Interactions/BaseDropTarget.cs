@@ -13,34 +13,23 @@ public abstract partial class BaseDropTarget: Panel
     /// <summary>
     /// Returns whether or not a draggable item is compatible with this drop target.
     /// </summary>
-    ///
-    /// <example>
-    /// <code>
-    /// public override bool IsItemCompatible(string id)
-    /// {
-    ///     return id.ReferenceEquals("custom_data");
-    /// }
-    /// </code>
-    /// </example>
     /// <param name="id">The identifier of the item being dropped.</param>
     /// <returns></returns>
-    public abstract bool IsItemCompatible(StringName id);
+    public abstract bool IsItemCompatible(string id);
 
     /// <summary>
     /// Processes the dropped data.
     /// </summary>
     /// <param name="id">The identifier of the item being dropped.</param>
     /// <param name="data">The serialised data of the dropped item.</param>
-    public abstract void ConsumeDrop(StringName id, DragData data);
+    public abstract void ConsumeDrop(string id, DragData data);
 
     #endregion
 
     #region Configuration
 
     public override bool _CanDropData(Vector2 atPosition, Variant data)
-    {
-        return IsItemCompatible(GetDropDataIdentifier(data));
-    }
+        =>  IsItemCompatible(GetDropDataIdentifier(data));
 
     public override void _DropData(Vector2 atPosition, Variant data)
     {
@@ -56,7 +45,7 @@ public abstract partial class BaseDropTarget: Panel
 
     #region Generic Drop Target Utils
 
-    public static (StringName, DragData)?
+    public static (string, DragData)?
     DecodeData(string data)
     {
         var passedData = (DragData) Json.ParseString(data);
@@ -65,7 +54,7 @@ public abstract partial class BaseDropTarget: Panel
         if (!passedData.ContainsKey("id") || !passedData.ContainsKey("data"))
             return null;
 
-        return ((StringName) passedData["id"],
+        return ((string) passedData["id"],
                 (DragData) passedData["data"]);
     }
 
@@ -74,7 +63,7 @@ public abstract partial class BaseDropTarget: Panel
     /// </summary>
     /// <param name="data">The serialised string.</param>
     /// <returns></returns>
-    public static StringName
+    public static string
     GetDropDataIdentifier(Variant data)
     {
         if (data.VariantType != Variant.Type.String)
