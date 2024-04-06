@@ -7,8 +7,7 @@ namespace SadChromaLib.UI;
 
 public abstract partial class BaseListView<DataType>: Control
 {
-    [Signal]
-    public delegate void ItemSelectionChangedEventHandler(int index);
+    public event Action<int> OnItemSelected;
 
     [ExportGroup("List View")]
     [Export]
@@ -158,8 +157,8 @@ public abstract partial class BaseListView<DataType>: Control
             // Automatically forward activation events to the main list view
             itemView.Visible = false;
 
-            itemView.Activated += OnItemActivatedInternal;
-            itemView.SwapRequested += OnItemRequestSwapInternal;
+            itemView.OnSelected += OnItemActivatedInternal;
+            itemView.OnRequestSwap += OnItemRequestSwapInternal;
 
             _items[i] = itemView;
 
@@ -206,7 +205,7 @@ public abstract partial class BaseListView<DataType>: Control
         }
 
         _selectedIndex = -1;
-        EmitSignal(SignalName.ItemSelectionChanged, -1);
+        OnItemSelected?.Invoke(-1);
     }
 
     /// <summary>
@@ -268,7 +267,7 @@ public abstract partial class BaseListView<DataType>: Control
         OnItemActivated(index);
         _selectedIndex = index;
 
-        EmitSignal(SignalName.ItemSelectionChanged, _selectedIndex);
+        OnItemSelected?.Invoke(_selectedIndex);
 
         if (!IsValidIndex(index) || !IsInstanceValid(_items[index]))
             return;

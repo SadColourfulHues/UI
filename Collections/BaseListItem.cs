@@ -1,15 +1,14 @@
+using System;
 using System.Diagnostics;
+
 using Godot;
 
 namespace SadChromaLib.UI;
 
 public abstract partial class BaseListItem<DataType>: Control
 {
-    [Signal]
-    public delegate void ActivatedEventHandler(int index);
-
-    [Signal]
-    public delegate void SwapRequestedEventHandler(int source, int target);
+    public event Action<int> OnSelected;
+    public event Action<int, int> OnRequestSwap;
 
     protected Panel _highlight = null;
     protected Button _activator = null;
@@ -63,7 +62,7 @@ public abstract partial class BaseListItem<DataType>: Control
             return;
 
         int sourceIndex = (int) droppedData[ListDraggableItem.KeySourceIndex];
-        EmitSignal(SignalName.SwapRequested, sourceIndex, GetIndex());
+        OnRequestSwap?.Invoke(sourceIndex, GetIndex());
     }
 
     #endregion
@@ -93,9 +92,8 @@ public abstract partial class BaseListItem<DataType>: Control
 
     #region Event Handlers
 
-    private void OnActivated()
-    {
-        EmitSignal(SignalName.Activated, GetIndex());
+    private void OnActivated() {
+        OnSelected?.Invoke(GetIndex());
     }
 
     #endregion

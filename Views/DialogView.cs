@@ -7,6 +7,8 @@ namespace SadChromaLib.UI;
 /// </summary>
 public partial class DialogView: BasicView
 {
+    public static event Action<DialogView> OnActiveChanged;
+
     static DialogView _activeRef = null;
 
     public override void _Notification(int what)
@@ -37,7 +39,9 @@ public partial class DialogView: BasicView
     public void BecomeActive()
     {
         GetActiveDialogRef()?.SetVisibility(false);
+
         _activeRef = this;
+        OnActiveChanged?.Invoke(_activeRef);
     }
 
     public void ResignActive()
@@ -46,6 +50,7 @@ public partial class DialogView: BasicView
             return;
 
         _activeRef = null;
+        OnActiveChanged?.Invoke(null);
     }
 
     public static DialogView GetActiveDialogRef()
