@@ -5,7 +5,7 @@ namespace SadChromaLib.UI;
 /// <summary>
 /// A special view type where only one could ever exist at any given time.
 /// </summary>
-public sealed partial class DialogView: BasicView
+public partial class DialogView: BasicView
 {
     static DialogView _activeRef = null;
 
